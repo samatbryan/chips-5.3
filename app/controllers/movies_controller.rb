@@ -9,15 +9,26 @@ class MoviesController < ApplicationController
 
   def index
     
+    puts params
     # handle sessions
+    used_session = false
     if !params.has_key?(:sort_title) && session[:sort_title]
       params[:sort_title] = session[:sort_title]
+      used_session = true
     end
     if !params.has_key?(:sort_release_date) && session[:sort_release_date]
       params[:sort_release_date] = session[:sort_release_date]
+      used_session = true
     end
     if !params.has_key?(:ratings) && session[:ratings]
       params[:ratings] = session[:ratings]
+      used_session = true
+    end
+    puts used_session
+
+    if used_session
+      redirect_to movies_path(ratings: params[:ratings], sort_release_date: params[:sort_release_date], sort_title: params[:sort_title])
+      return
     end
 
     # check for ratings box
