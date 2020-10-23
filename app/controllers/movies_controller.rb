@@ -8,16 +8,29 @@ class MoviesController < ApplicationController
 
 
   def index
-
+    # check for ratings box
     @all_ratings = Movie.possible_ratings
-
     checked_ratings = []
     if params[:ratings]
       checked_ratings = params[:ratings].keys
     end
-
     @ratings_to_show = checked_ratings
+    @ratings_hash = Hash[@ratings_to_show.map {|x| [x, 1]}]
+
     @movies = Movie.with_ratings(checked_ratings)
+
+    # check for sort title
+    if params[:sort_title]
+      @movies = @movies.sorted_titles()
+      @sort_title = true
+    end
+
+    # check for sort release date
+    if params[:sort_release_date]
+      @movies = @movies.sorted_release_date()
+      @sort_release_date = true
+    end
+
 
   end
 
