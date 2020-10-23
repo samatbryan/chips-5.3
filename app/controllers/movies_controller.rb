@@ -9,6 +9,7 @@ class MoviesController < ApplicationController
 
   def index
     
+    # handle sessions
     if !params.has_key?(:sort_title) && session[:sort_title]
       params[:sort_title] = session[:sort_title]
     end
@@ -18,17 +19,16 @@ class MoviesController < ApplicationController
     if !params.has_key?(:ratings) && session[:ratings]
       params[:ratings] = session[:ratings]
     end
+
     # check for ratings box
     @all_ratings = Movie.possible_ratings
-    checked_ratings = []
+    checked_ratings = @all_ratings
     if params[:ratings]
       checked_ratings = params[:ratings].keys
       session[:ratings] = params[:ratings]
     end
     @ratings_to_show = checked_ratings
-    #session[:ratings_to_show] = @ratings_to_show 
     @ratings_hash = Hash[@ratings_to_show.map {|x| [x, 1]}]
-    #session[:ratings_hash] = @ratings_hash 
     @movies = Movie.with_ratings(checked_ratings)
     
 
