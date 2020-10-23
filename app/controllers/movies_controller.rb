@@ -8,27 +8,42 @@ class MoviesController < ApplicationController
 
 
   def index
+    
+    if !params.has_key?(:sort_title) && session[:sort_title]
+      params[:sort_title] = session[:sort_title]
+    end
+    if !params.has_key?(:sort_release_date) && session[:sort_release_date]
+      params[:sort_release_date] = session[:sort_release_date]
+    end
+    if !params.has_key?(:ratings) && session[:ratings]
+      params[:ratings] = session[:ratings]
+    end
     # check for ratings box
     @all_ratings = Movie.possible_ratings
     checked_ratings = []
     if params[:ratings]
       checked_ratings = params[:ratings].keys
+      session[:ratings] = params[:ratings]
     end
     @ratings_to_show = checked_ratings
+    #session[:ratings_to_show] = @ratings_to_show 
     @ratings_hash = Hash[@ratings_to_show.map {|x| [x, 1]}]
-
+    #session[:ratings_hash] = @ratings_hash 
     @movies = Movie.with_ratings(checked_ratings)
+    
 
     # check for sort title
     if params[:sort_title]
       @movies = @movies.sorted_titles()
       @sort_title = true
+      session[:sort_title] = params[:sort_title]
     end
 
     # check for sort release date
     if params[:sort_release_date]
       @movies = @movies.sorted_release_date()
       @sort_release_date = true
+      session[:sort_release_date] = params[:sort_release_date]
     end
 
 
