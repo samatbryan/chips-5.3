@@ -6,8 +6,19 @@ class MoviesController < ApplicationController
     # will render app/views/movies/show.<extension> by default
   end
 
+
   def index
-    @movies = Movie.all
+
+    @all_ratings = Movie.possible_ratings
+
+    checked_ratings = []
+    if params[:ratings]
+      checked_ratings = params[:ratings].keys
+    end
+
+    @ratings_to_show = checked_ratings
+    @movies = Movie.with_ratings(checked_ratings)
+
   end
 
   def new
